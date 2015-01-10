@@ -27,7 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+    // self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
@@ -92,5 +92,53 @@
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
+
+- (IBAction)grabThatScreen:(id)sender {
+    
+    // OPTION 1: using UIWindow
+    
+    // create graphics context with screen size
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    UIGraphicsBeginImageContext(screenRect.size);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    [[UIColor blackColor] set];
+    CGContextFillRect(ctx, screenRect);
+
+    // grab reference to our window
+    UIWindow *window = [UIApplication sharedApplication].keyWindow;
+
+    // transfer content into our context
+    [window.layer renderInContext:ctx];
+    UIImage *screengrab = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    // save screengrab to Camera Roll
+    UIImageWriteToSavedPhotosAlbum(screengrab, nil, nil, nil);
+    
+}
+
+- (IBAction)grabThatScreen2:(id)sender {
+    
+    // OPTION 2: using UIView
+    
+    // grab reference to our top level view controller
+    UIView *wholeScreen = self.splitViewController.view;
+
+    // define the size and save grab UIImage from it
+    UIGraphicsBeginImageContextWithOptions(wholeScreen.bounds.size, wholeScreen.opaque, 0.0);
+    [wholeScreen.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *screengrab = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    // save screengrab to Camera Roll
+    UIImageWriteToSavedPhotosAlbum(screengrab, nil, nil, nil);
+}
+
+- (IBAction)grabThatScreen3:(id)sender {
+    
+    // I'm sure we'll find other options
+    
+}
+
 
 @end
